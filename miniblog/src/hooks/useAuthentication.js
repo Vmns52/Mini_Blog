@@ -7,6 +7,7 @@ import{auth} from '../firebase/config';
 
 import { useState, useEffect } from 'react';
 
+//hook de autenticação
 export const useAuthentication = () => {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export const useAuthentication = () => {
             return;
         }    
     }
-
+    // register
     const createUser = async (data) => {
         checkIfIsCancelled();
         setLoading(true);
@@ -61,6 +62,33 @@ export const useAuthentication = () => {
 
         }
     };
+    // sign out - logout
+    const logout = () => {
+        checkIfIsCancelled();
+        signOut(auth);
+    };
+
+    // login - sign in
+    const login = async(data) => {
+        checkIfIsCancelled();
+        setLoading(true);
+        setError(false);
+        try {
+            await signInWithEmailAndPassword(auth, data.email, data.password);
+            setLoading(false);
+        } catch (error) {
+            let systemErrorMessage;
+            if (error.code === "auth/invalid-credential") {
+                systemErrorMessage = "E-mail ou senha inválidos.";
+            } else {
+                systemErrorMessage = "Ocorreu um erro, por favor tente novamente mais tarde.";
+            }
+            setError(systemErrorMessage);
+            setLoading(false);
+        }
+    }
+
+
     useEffect(() => {
         return () => setCancelled(true);
     }, []);
@@ -68,7 +96,9 @@ export const useAuthentication = () => {
         auth,
         createUser,
         error,
-        loading
+        loading,
+        logout,
+        login
     };
 
 };

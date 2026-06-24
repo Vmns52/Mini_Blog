@@ -101,3 +101,8 @@ button[disabled]{
   border-radius: 5px;
 }
 
+.loading{
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+}
